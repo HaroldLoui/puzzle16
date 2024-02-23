@@ -28,8 +28,9 @@ fn app(cx: Scope) -> Element {
         box-shadow: none;
     "#;
 
-    let random_array = random_array(SIZE);
-    let arrays = use_ref(&cx, || random_array);
+    let is_win = use_state(&cx, || false);
+
+    let arrays = use_ref(&cx, || random_array(SIZE));
 
     let mut index = 0;
     let binding = arrays.read();
@@ -50,6 +51,9 @@ fn app(cx: Scope) -> Element {
             rsx! {
                 div {
                     onclick: move |_| {
+                        if *is_win.get() {
+                            return;
+                        }
                         let mut array: RefMut<'_, Vec<i32>> = arrays.write();
                         for k in 0..4 {
                             let new_x: i32 = i as i32 + DIR[k][0];
@@ -62,8 +66,7 @@ fn app(cx: Scope) -> Element {
                                     let index: usize = i * N + j;
                                     array.swap(index, d_index);
                                     if check_win(&array) {
-                                        // TODO: show toast
-                                        println!("success!!!");
+                                        is_win.set(true);
                                     }
                                     break;
                                 }
@@ -82,7 +85,7 @@ fn app(cx: Scope) -> Element {
     let container_style = format!(r#"
         width: {}px;
         height: {}px;
-        margin: 50px auto;
+        margin: 20px auto;
         border-radius: 15px;
         display: flex;
         flex-wrap: wrap;
@@ -92,10 +95,36 @@ fn app(cx: Scope) -> Element {
             20px -20px 60px #ffffff;
         "#, width, height
     );
+    let button_style = r#"
+        width: 60px; 
+        height: 40px; 
+        line-height: 40px;
+        text-align: center;
+        margin: 20px auto; 
+        background-color: #409EFF;
+        border: 2px solid #337ecc;
+        border-radius: 5px;
+        cursor: pointer;
+    "#;
     cx.render(rsx! {
+        div {
+            style: "{button_style}",
+            onclick: move |_| {
+                let mut array: RefMut<'_, Vec<i32>> = arrays.write();
+                let new_array = random_array(SIZE);
+                array.clone_from(&new_array);
+
+                is_win.set(false);
+            },
+            "reset"
+        }
         div {
             style: "{container_style}",
             cells
+        }
+        p {
+            style: "text-align: center;",
+            if *is_win.get() { "success!!!" } else { "" }
         }
     })
 }
