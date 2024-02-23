@@ -11,23 +11,6 @@ fn main() {
 }
 
 fn app(cx: Scope) -> Element {
-    let cell_style = r#"
-        width: 100px;
-        height: 100px;
-        line-height: 100px;
-        text-align: center;
-        user-select: none;
-        cursor: pointer;
-        border-radius: 15px;
-        background-color:  #a3ecea;
-        box-shadow: -3px -3px 10px #81bcba,
-            3px 3px 10px #affefc;
-    "#;
-    let blank_style = r#"
-        background-color: #e0e0e0;
-        box-shadow: none;
-    "#;
-
     let is_win = use_state(&cx, || false);
 
     let arrays = use_ref(&cx, || random_array(SIZE));
@@ -41,12 +24,7 @@ fn app(cx: Scope) -> Element {
         let number = *e;
         index += 1;
         if number == -1 {
-            rsx! {
-                div {
-                    style: "{cell_style} {blank_style}",
-                    ""
-                }
-            }
+            rsx! { div { class: "cell blank", "" } }
         } else {
             rsx! {
                 div {
@@ -73,7 +51,7 @@ fn app(cx: Scope) -> Element {
                             }
                         }
                     },
-                    style: "{cell_style}",
+                    class: "cell",
                     "{number}"
                 }
             }
@@ -82,33 +60,14 @@ fn app(cx: Scope) -> Element {
 
     let width = N * 100 + 50;
     let height = N * 100 + 50;
-    let container_style = format!(r#"
-        width: {}px;
-        height: {}px;
-        margin: 20px auto;
-        border-radius: 15px;
-        display: flex;
-        flex-wrap: wrap;
-        align-content: space-around;
-        justify-content: space-around;
-        box-shadow: -20px 20px 60px #bebebe,
-            20px -20px 60px #ffffff;
-        "#, width, height
-    );
-    let button_style = r#"
-        width: 60px; 
-        height: 40px; 
-        line-height: 40px;
-        text-align: center;
-        margin: 20px auto; 
-        background-color: #409EFF;
-        border: 2px solid #337ecc;
-        border-radius: 5px;
-        cursor: pointer;
-    "#;
+    let container_style = format!("width: {}px; height: {}px;", width, height);
     cx.render(rsx! {
+        link {
+            rel: "stylesheet",
+            href: "src/assets/app.css"
+        }
         div {
-            style: "{button_style}",
+            class: "btn",
             onclick: move |_| {
                 let mut array: RefMut<'_, Vec<i32>> = arrays.write();
                 let new_array = random_array(SIZE);
@@ -119,6 +78,7 @@ fn app(cx: Scope) -> Element {
             "reset"
         }
         div {
+            class: "container",
             style: "{container_style}",
             cells
         }
@@ -157,4 +117,3 @@ fn random_array(n: usize) -> Vec<i32> {
 
     array
 }
-

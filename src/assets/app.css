@@ -1,0 +1,40 @@
+.container {
+    margin: 20px auto;
+    border-radius: 15px;
+    display: flex;
+    flex-wrap: wrap;
+    align-content: space-around;
+    justify-content: space-around;
+    box-shadow: -20px 20px 60px #bebebe,
+        20px -20px 60px #ffffff;
+}
+
+.btn {
+    width: 60px; 
+    height: 40px; 
+    line-height: 40px;
+    text-align: center;
+    margin: 20px auto; 
+    background-color: #409EFF;
+    border: 2px solid #337ecc;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.cell {
+    width: 100px;
+    height: 100px;
+    line-height: 100px;
+    text-align: center;
+    user-select: none;
+    cursor: pointer;
+    border-radius: 15px;
+    background-color:  #a3ecea;
+    box-shadow: -3px -3px 10px #81bcba,
+        3px 3px 10px #affefc;
+}
+
+.blank {
+    background-color: #e0e0e0;
+    box-shadow: none;
+}
