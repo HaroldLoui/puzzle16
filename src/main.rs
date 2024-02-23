@@ -64,10 +64,6 @@ fn app(cx: Scope) -> Element {
     let height = N * 100 + 50;
     let container_style = format!("width: {}px; height: {}px;", width, height);
     cx.render(rsx! {
-        // link {
-        //     rel: "stylesheet",
-        //     href: "/src/assets/app.css"
-        // }
         style { include_str!("./assets/app.css") }
         div {
             class: "btn",
