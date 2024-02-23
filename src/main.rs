@@ -1,7 +1,7 @@
 #![windows_subsystem = "windows"]
 
 use dioxus::prelude::*;
-use rand::seq::SliceRandom;
+use rand::Rng;
 use std::cell::RefMut;
 
 const N: usize = 4;
@@ -26,7 +26,9 @@ fn app(cx: Scope) -> Element {
         let number = *e;
         index += 1;
         if number == -1 {
-            rsx! { div { class: "cell blank", "" } }
+            rsx! { 
+                div { class: "cell blank", "" } 
+            }
         } else {
             rsx! {
                 div {
@@ -43,8 +45,7 @@ fn app(cx: Scope) -> Element {
                                 let new_y: usize = new_y as usize;
                                 let d_index: usize = new_x * N + new_y;
                                 if array[d_index] == -1 {
-                                    let index: usize = i * N + j;
-                                    array.swap(index, d_index);
+                                    array.swap(index - 1, d_index);
                                     if check_win(&array) {
                                         is_win.set(true);
                                     }
@@ -69,7 +70,7 @@ fn app(cx: Scope) -> Element {
             class: "btn",
             onclick: move |_| {
                 let mut array: RefMut<'_, Vec<i32>> = arrays.write();
-                let new_array = random_array(SIZE);
+                let new_array: Vec<i32> = random_array(SIZE);
                 array.clone_from(&new_array);
 
                 is_win.set(false);
@@ -111,8 +112,31 @@ fn random_array(n: usize) -> Vec<i32> {
     for i in 0..length {
         array.push(i as i32);
     }
-    array.shuffle(&mut rand::thread_rng());
     array.push(-1);
+    
+    let mut cur_index = length;
+    let mut rng = rand::thread_rng();
+    for _count in 0..100 {
+        let cur_x = cur_index / N;
+        let cur_y = cur_index % N;
+        
+        let mut d = rng.gen_range(0..4);
+        let mut new_x = cur_x as i32 + DIR[d][0];
+        let mut new_y = cur_y as i32 + DIR[d][1];
+        while !in_area(new_x, new_y) {
+            d = rng.gen_range(0..4);
+            new_x = cur_x as i32 + DIR[d][0];
+            new_y = cur_y as i32 + DIR[d][1];
+        }
+
+        let new_x = new_x as usize;
+        let new_y = new_y as usize;
+        let new_index = new_x * N + new_y;
+
+        array.swap(cur_index, new_index);
+
+        cur_index = new_index;
+    }
 
     array
 }
