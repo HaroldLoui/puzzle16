@@ -62,6 +62,7 @@ fn app(cx: Scope) -> Element {
                                     let index: usize = i * N + j;
                                     array.swap(index, d_index);
                                     if check_win(&array) {
+                                        // TODO: show toast
                                         println!("success!!!");
                                     }
                                     break;
