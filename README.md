@@ -16,6 +16,8 @@ need `dioxus-cli`:
 cargo install dioxus-cli
 ```
 
+then:
+
 ```bash
 dx bundle --release
 ```
